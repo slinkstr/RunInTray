@@ -16,6 +16,7 @@ namespace RunInTray
             MenuItem hideMenuItem = new MenuItem("Hide", Hide);
             hideMenuItem.Enabled = false;
             MenuItem exitMenuItem = new MenuItem("Exit", Exit);
+            ThreadExit += OnThreadExit;
 
             if(Program.TrayTitle == null)
                 Program.TrayTitle = Program.Process.ProcessName;
@@ -29,10 +30,12 @@ namespace RunInTray
 
         private void NotifyIconOnDoubleClick(object sender, EventArgs eventArgs)
         {
-            if (!Program.MainWindowVisible) {
+            if (!Program.MainWindowVisible)
+            {
                 Show(sender, eventArgs);
             }
-            else {
+            else
+            {
                 Hide(sender, eventArgs);
             }
         }
@@ -56,20 +59,25 @@ namespace RunInTray
         private void Exit(object sender, EventArgs e)
         {
             _notifyIcon.ContextMenu.MenuItems.Cast<MenuItem>().First(i => i.Text == "Exit").Enabled = false;
-
             if (!Program.MainWindowVisible)
             {
                 ShowWindow(Program.MainWindowHandle, SW_MINIMIZE);
                 Program.WaitForWindow();
             }
 
-            Program.Process.CloseMainWindow(); // try graceful exit first
+            // try graceful exit first
+            Program.Process.CloseMainWindow(); 
             Program.Process.WaitForExit(5000);
-            if (!Program.Process.HasExited) {
+            if (!Program.Process.HasExited)
+            {
                 Program.Process.Kill();
             }
+            // Process.Exited event handler will close this program as well
+        }
 
-            // exit event handler will close this program as well
+        private void OnThreadExit(object sender, EventArgs e)
+        {
+            _notifyIcon.Icon = null;
         }
     }
 }
