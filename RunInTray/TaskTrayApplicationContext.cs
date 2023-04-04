@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -19,7 +19,9 @@ namespace RunInTray
             ThreadExit += OnThreadExit;
 
             if(Program.TrayTitle == null)
+            {
                 Program.TrayTitle = Program.Process.ProcessName;
+            }
 
             _notifyIcon.Text = Program.TrayTitle;
             _notifyIcon.Icon = Program.Icon;
@@ -66,7 +68,7 @@ namespace RunInTray
             }
 
             // try graceful exit first
-            Program.Process.CloseMainWindow(); 
+            Program.Process.CloseMainWindow();
             Program.Process.WaitForExit(5000);
             if (!Program.Process.HasExited)
             {
