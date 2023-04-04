@@ -15,8 +15,6 @@ namespace RunInTray
         public static IntPtr MainWindowHandle;
         public static bool MainWindowVisible;
 
-        private static readonly string ThisFile = System.Reflection.Assembly.GetExecutingAssembly().Location;
-
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -39,36 +37,8 @@ namespace RunInTray
             string subArguments = ConsoleUtils.GetSubArguments(args);
 
             string filePath = args[0];
-            string externalFileName = Path.GetFileNameWithoutExtension(filePath);
-            string expectedName = externalFileName + "-tray.exe";
-
-            if (Path.GetFileName(ThisFile) != expectedName)
-            {
-                Install(expectedName, fullArguments);
-                return;
-            }
 
             RunTray(filePath, subArguments);
-        }
-
-        private static void Install(string newName, string arguments)
-        {
-            if (!Directory.Exists("generated"))
-                Directory.CreateDirectory("generated");
-
-            string newFile = Path.Combine(Path.GetDirectoryName(ThisFile), "generated", newName);
-            if (!File.Exists(newFile))
-            {
-                File.Copy(ThisFile, newFile);
-                Unblock(newFile);
-            }
-
-            Process.Start(newFile, arguments);
-        }
-
-        private static bool Unblock(string fileName)
-        {
-            return NativeImports.DeleteFile(fileName + ":Zone.Identifier");
         }
 
         private static void RunTray(string filePath, string subArguments)
