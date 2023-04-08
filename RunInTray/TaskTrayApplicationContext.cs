@@ -45,6 +45,7 @@ namespace RunInTray
         private void Show(object sender, EventArgs e)
         {
             ShowWindow(Program.MainWindowHandle, SW_NORMAL);
+            SetForegroundWindow(Program.MainWindowHandle);
             Program.MainWindowVisible = true;
             _notifyIcon.ContextMenu.MenuItems.Cast<MenuItem>().First(i => i.Text == "Show").Enabled = false;
             _notifyIcon.ContextMenu.MenuItems.Cast<MenuItem>().First(i => i.Text == "Hide").Enabled = true;

@@ -12,8 +12,7 @@ namespace RunInTray
         public const int SW_MINIMIZE = 6;
         public const int SW_NORMAL = 1;
 
-        [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool DeleteFile(string name);
+        [DllImport("user32.dll")]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
     }
 }
